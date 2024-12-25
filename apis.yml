@@ -25,7 +25,6 @@ apis:
     properties:
       - type: Documentation
         url: https://www.usps.com/business/web-tools-apis/
-    overlays: []
     aid: united-states-postal-service-usps:united-states-postal-service-usps-api
 common:
   - type: Property
