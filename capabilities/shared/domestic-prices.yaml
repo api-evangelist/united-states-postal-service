@@ -1,0 +1,144 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "USPS Domestic Prices API"
+  description: "Provides postage pricing for domestic USPS shipments including base rates, extra service rates, and total rate calculations."
+  tags:
+    - USPS
+    - Pricing
+    - Shipping
+    - Government
+  created: "2026-05-03"
+  modified: "2026-05-03"
+
+binds:
+  - namespace: env
+    keys:
+      USPS_BEARER_TOKEN: USPS_BEARER_TOKEN
+
+capability:
+  consumes:
+    - type: http
+      namespace: usps-domestic-prices
+      baseUri: https://apis.usps.com
+      description: "USPS domestic postage pricing API."
+      authentication:
+        type: bearer
+        token: "{{USPS_BEARER_TOKEN}}"
+      resources:
+        - name: base-rates
+          path: /prices/v3/base-rates/search
+          description: "Base postage rate search."
+          operations:
+            - name: search-base-rates
+              method: POST
+              description: "Search for base postage rates."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  originZIPCode: "{{tools.originZIPCode}}"
+                  destinationZIPCode: "{{tools.destinationZIPCode}}"
+                  weight: "{{tools.weight}}"
+                  mailClass: "{{tools.mailClass}}"
+        - name: extra-service-rates
+          path: /prices/v3/extra-service-rates/search
+          description: "Extra service rates search."
+          operations:
+            - name: search-extra-service-rates
+              method: POST
+              description: "Search for extra service rates."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  extraServiceCode: "{{tools.extraServiceCode}}"
+                  mailClass: "{{tools.mailClass}}"
+        - name: total-rates
+          path: /prices/v3/total-rates/search
+          description: "Total rate search including all fees."
+          operations:
+            - name: search-total-rates
+              method: POST
+              description: "Search for total postage rates including all fees."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  originZIPCode: "{{tools.originZIPCode}}"
+                  destinationZIPCode: "{{tools.destinationZIPCode}}"
+                  weight: "{{tools.weight}}"
+                  mailClass: "{{tools.mailClass}}"
+
+  exposes:
+    - type: rest
+      port: 8102
+      namespace: usps-domestic-prices-rest
+      resources:
+        - path: /v1/prices/base-rates
+          name: base-rates
+          description: "Search base postage rates."
+          operations:
+            - method: POST
+              name: search-base-rates
+              description: "Search base rates."
+              call: "usps-domestic-prices.search-base-rates"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/prices/total-rates
+          name: total-rates
+          description: "Search total postage rates."
+          operations:
+            - method: POST
+              name: search-total-rates
+              description: "Search total rates."
+              call: "usps-domestic-prices.search-total-rates"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9102
+      namespace: usps-domestic-prices-mcp
+      transport: http
+      tools:
+        - name: search-base-rates
+          description: "Search USPS base postage rates for a domestic shipment."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-domestic-prices.search-base-rates"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: search-extra-service-rates
+          description: "Search USPS extra service rates (insurance, signature, etc.)."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-domestic-prices.search-extra-service-rates"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: search-total-rates
+          description: "Search total USPS postage rates including all extra service fees."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-domestic-prices.search-total-rates"
+          outputParameters:
+            - type: object
+              mapping: "$."

@@ -1,0 +1,182 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "USPS Carrier Pickup API"
+  description: "Enables free USPS carrier pickup scheduling, Monday through Saturday, excluding federal holidays."
+  tags:
+    - USPS
+    - Carrier Pickup
+    - Shipping
+    - Government
+  created: "2026-05-03"
+  modified: "2026-05-03"
+
+binds:
+  - namespace: env
+    keys:
+      USPS_BEARER_TOKEN: USPS_BEARER_TOKEN
+
+capability:
+  consumes:
+    - type: http
+      namespace: usps-carrier-pickup
+      baseUri: https://apis.usps.com
+      description: "USPS carrier pickup scheduling API."
+      authentication:
+        type: bearer
+        token: "{{USPS_BEARER_TOKEN}}"
+      resources:
+        - name: carrier-pickup
+          path: /pickup/v3/carrier-pickup
+          description: "Carrier pickup scheduling and management."
+          operations:
+            - name: schedule-carrier-pickup
+              method: POST
+              description: "Schedule a free USPS carrier pickup."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  pickupAddress: "{{tools.pickupAddress}}"
+                  packages: "{{tools.packages}}"
+                  packageLocation: "{{tools.packageLocation}}"
+            - name: get-carrier-pickup
+              method: GET
+              description: "Retrieve an existing carrier pickup by confirmation number."
+              inputParameters:
+                - name: confirmationNumber
+                  in: query
+                  type: string
+                  required: true
+                  description: "Pickup confirmation number."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: update-carrier-pickup
+              method: PUT
+              description: "Update an existing carrier pickup request."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  confirmationNumber: "{{tools.confirmationNumber}}"
+                  packages: "{{tools.packages}}"
+            - name: cancel-carrier-pickup
+              method: DELETE
+              description: "Cancel a previously scheduled carrier pickup."
+              inputParameters:
+                - name: confirmationNumber
+                  in: query
+                  type: string
+                  required: true
+                  description: "Pickup confirmation number to cancel."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+
+  exposes:
+    - type: rest
+      port: 8103
+      namespace: usps-carrier-pickup-rest
+      resources:
+        - path: /v1/pickups
+          name: pickups
+          description: "Schedule and manage carrier pickups."
+          operations:
+            - method: POST
+              name: schedule-pickup
+              description: "Schedule a carrier pickup."
+              call: "usps-carrier-pickup.schedule-carrier-pickup"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: GET
+              name: get-pickup
+              description: "Get pickup details."
+              call: "usps-carrier-pickup.get-carrier-pickup"
+              with:
+                confirmationNumber: "rest.confirmationNumber"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/pickups/{confirmationNumber}
+          name: pickup-by-id
+          description: "Manage a specific pickup by confirmation number."
+          operations:
+            - method: PUT
+              name: update-pickup
+              description: "Update pickup details."
+              call: "usps-carrier-pickup.update-carrier-pickup"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: DELETE
+              name: cancel-pickup
+              description: "Cancel a pickup."
+              call: "usps-carrier-pickup.cancel-carrier-pickup"
+              with:
+                confirmationNumber: "rest.confirmationNumber"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9103
+      namespace: usps-carrier-pickup-mcp
+      transport: http
+      tools:
+        - name: schedule-carrier-pickup
+          description: "Schedule a free USPS carrier pickup at a specified address."
+          hints:
+            readOnly: false
+            destructive: false
+            idempotent: false
+          call: "usps-carrier-pickup.schedule-carrier-pickup"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: get-carrier-pickup
+          description: "Retrieve details of an existing USPS carrier pickup by confirmation number."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-carrier-pickup.get-carrier-pickup"
+          with:
+            confirmationNumber: "tools.confirmationNumber"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: update-carrier-pickup
+          description: "Update an existing USPS carrier pickup request."
+          hints:
+            readOnly: false
+            destructive: false
+            idempotent: true
+          call: "usps-carrier-pickup.update-carrier-pickup"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: cancel-carrier-pickup
+          description: "Cancel a previously scheduled USPS carrier pickup."
+          hints:
+            readOnly: false
+            destructive: true
+            idempotent: true
+          call: "usps-carrier-pickup.cancel-carrier-pickup"
+          with:
+            confirmationNumber: "tools.confirmationNumber"
+          outputParameters:
+            - type: object
+              mapping: "$."

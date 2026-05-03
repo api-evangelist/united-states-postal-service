@@ -1,0 +1,115 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "USPS Package Tracking"
+  description: >-
+    Workflow capability for package tracking and delivery status monitoring.
+    Combines the USPS Tracking API with address validation to support customer
+    service teams and logistics operations tracking USPS shipments.
+  tags:
+    - USPS
+    - Package Tracking
+    - Logistics
+    - Customer Service
+    - Government
+  created: "2026-05-03"
+  modified: "2026-05-03"
+
+binds:
+  - namespace: env
+    keys:
+      USPS_BEARER_TOKEN: USPS_BEARER_TOKEN
+
+capability:
+  consumes:
+    - import: usps-tracking
+      location: ./shared/tracking.yaml
+    - import: usps-addresses
+      location: ./shared/addresses.yaml
+
+  exposes:
+    - type: rest
+      port: 8081
+      namespace: usps-package-tracking-api
+      description: "Unified REST API for USPS package tracking and delivery monitoring."
+      resources:
+        - path: /v1/tracking/{trackingNumber}
+          name: package-tracking
+          description: "Get tracking status for a package."
+          operations:
+            - method: GET
+              name: get-tracking
+              description: "Track a USPS package."
+              call: "usps-tracking.get-tracking"
+              with:
+                trackingNumber: "rest.trackingNumber"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/tracking
+          name: bulk-tracking
+          description: "Track multiple packages."
+          operations:
+            - method: POST
+              name: get-multiple-tracking
+              description: "Track multiple USPS packages."
+              call: "usps-tracking.get-multiple-tracking"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/addresses/validate
+          name: address-validation
+          description: "Validate a delivery address."
+          operations:
+            - method: GET
+              name: validate-address
+              description: "Validate address."
+              call: "usps-addresses.validate-address"
+              with:
+                streetAddress: "rest.streetAddress"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9091
+      namespace: usps-package-tracking-mcp
+      transport: http
+      description: "MCP server for AI-assisted USPS package tracking and delivery status."
+      tools:
+        - name: track-package
+          description: "Get tracking status and scan event history for a USPS package by tracking number."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-tracking.get-tracking"
+          with:
+            trackingNumber: "tools.trackingNumber"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: track-multiple-packages
+          description: "Get tracking status for multiple USPS packages in a single request."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-tracking.get-multiple-tracking"
+          with:
+            trackingNumbers: "tools.trackingNumbers"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: validate-delivery-address
+          description: "Validate and standardize a delivery address to ensure USPS deliverability."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-addresses.validate-address"
+          with:
+            streetAddress: "tools.streetAddress"
+            city: "tools.city"
+            state: "tools.state"
+            ZIPCode: "tools.ZIPCode"
+          outputParameters:
+            - type: object
+              mapping: "$."

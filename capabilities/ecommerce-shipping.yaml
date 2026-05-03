@@ -1,0 +1,220 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "USPS E-Commerce Shipping"
+  description: >-
+    Unified workflow capability for e-commerce shipping operations. Combines the
+    USPS Addresses, Domestic Prices, and Carrier Pickup APIs to support the complete
+    shipping lifecycle: address validation at checkout, rate shopping, and pickup
+    scheduling. Designed for e-commerce developers and shipping software integrators.
+  tags:
+    - USPS
+    - E-Commerce
+    - Shipping
+    - Fulfillment
+    - Government
+  created: "2026-05-03"
+  modified: "2026-05-03"
+
+binds:
+  - namespace: env
+    keys:
+      USPS_BEARER_TOKEN: USPS_BEARER_TOKEN
+
+capability:
+  consumes:
+    - import: usps-addresses
+      location: ./shared/addresses.yaml
+    - import: usps-domestic-prices
+      location: ./shared/domestic-prices.yaml
+    - import: usps-carrier-pickup
+      location: ./shared/carrier-pickup.yaml
+
+  exposes:
+    - type: rest
+      port: 8080
+      namespace: usps-ecommerce-shipping-api
+      description: "Unified REST API for USPS e-commerce shipping workflows."
+      resources:
+        - path: /v1/addresses/validate
+          name: address-validation
+          description: "Validate and standardize a shipping address."
+          operations:
+            - method: GET
+              name: validate-address
+              description: "Validate address for shipping."
+              call: "usps-addresses.validate-address"
+              with:
+                streetAddress: "rest.streetAddress"
+                city: "rest.city"
+                state: "rest.state"
+                ZIPCode: "rest.ZIPCode"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/addresses/zipcode
+          name: zipcode-lookup
+          description: "Look up ZIP Code by address."
+          operations:
+            - method: GET
+              name: get-zip-code
+              description: "Get ZIP Code."
+              call: "usps-addresses.get-zip-code"
+              with:
+                streetAddress: "rest.streetAddress"
+                city: "rest.city"
+                state: "rest.state"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/rates/base
+          name: base-rates
+          description: "Search base postage rates."
+          operations:
+            - method: POST
+              name: search-base-rates
+              description: "Get base postage rates for a shipment."
+              call: "usps-domestic-prices.search-base-rates"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/rates/total
+          name: total-rates
+          description: "Search total postage rates with fees."
+          operations:
+            - method: POST
+              name: search-total-rates
+              description: "Get total postage rates including all fees."
+              call: "usps-domestic-prices.search-total-rates"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/pickups
+          name: pickups
+          description: "Schedule a USPS carrier pickup."
+          operations:
+            - method: POST
+              name: schedule-pickup
+              description: "Schedule carrier pickup."
+              call: "usps-carrier-pickup.schedule-carrier-pickup"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/pickups/{confirmationNumber}
+          name: pickup-management
+          description: "Manage an existing pickup."
+          operations:
+            - method: GET
+              name: get-pickup
+              description: "Get pickup details."
+              call: "usps-carrier-pickup.get-carrier-pickup"
+              with:
+                confirmationNumber: "rest.confirmationNumber"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: DELETE
+              name: cancel-pickup
+              description: "Cancel a pickup."
+              call: "usps-carrier-pickup.cancel-carrier-pickup"
+              with:
+                confirmationNumber: "rest.confirmationNumber"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9090
+      namespace: usps-ecommerce-shipping-mcp
+      transport: http
+      description: "MCP server for AI-assisted USPS e-commerce shipping workflows."
+      tools:
+        - name: validate-shipping-address
+          description: "Validate and standardize a US shipping address to USPS specifications."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-addresses.validate-address"
+          with:
+            streetAddress: "tools.streetAddress"
+            city: "tools.city"
+            state: "tools.state"
+            ZIPCode: "tools.ZIPCode"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: get-city-state
+          description: "Get city and state name for a ZIP Code."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-addresses.get-city-state"
+          with:
+            ZIPCode: "tools.ZIPCode"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: get-zip-code
+          description: "Look up ZIP Code for a street address."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-addresses.get-zip-code"
+          with:
+            streetAddress: "tools.streetAddress"
+            city: "tools.city"
+            state: "tools.state"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: search-base-rates
+          description: "Search USPS base postage rates for a domestic shipment by weight, dimensions, and mail class."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-domestic-prices.search-base-rates"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: search-total-rates
+          description: "Get total USPS postage rates including extra service fees for a complete shipping configuration."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-domestic-prices.search-total-rates"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: schedule-carrier-pickup
+          description: "Schedule a free USPS carrier pickup at a residential or commercial address."
+          hints:
+            readOnly: false
+            destructive: false
+            idempotent: false
+          call: "usps-carrier-pickup.schedule-carrier-pickup"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: get-carrier-pickup
+          description: "Retrieve details of a scheduled USPS carrier pickup by confirmation number."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "usps-carrier-pickup.get-carrier-pickup"
+          with:
+            confirmationNumber: "tools.confirmationNumber"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: cancel-carrier-pickup
+          description: "Cancel a previously scheduled USPS carrier pickup."
+          hints:
+            readOnly: false
+            destructive: true
+            idempotent: true
+          call: "usps-carrier-pickup.cancel-carrier-pickup"
+          with:
+            confirmationNumber: "tools.confirmationNumber"
+          outputParameters:
+            - type: object
+              mapping: "$."
