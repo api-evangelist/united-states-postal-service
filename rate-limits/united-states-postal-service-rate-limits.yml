@@ -4,142 +4,38 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: United States Postal Service
 providerId: united-states-postal-service
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: true
 tags:
   - Government
   - Postal Service
-  - Shipping
-  - Logistics
-  - Address Validation
-  - Package Tracking
   - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the United States Postal Service API surface.
-  Captures per-tier quotas, burst behavior, response signaling, and recovery semantics. Defaults are scaffold
-  values to be replaced with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
-responseCodes:
-  throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
+description: USPS publishes that quotas exist on the modernized developers.usps.com platform, but
+  it does not publish per-second or per-day numeric limits. Quota increases and access to non-default
+  APIs are gated behind a USPS API service request. Authentication is OAuth 2.0 Client Credentials.
+sources:
+  - https://developers.usps.com
+  - https://developers.usps.com/getting-started
+notes: USPS does not publish numeric rate-limit values. The Getting Started doc states quota increases
+  must be requested via a USPS API service request.
 limits:
-  - tier: free
-    name: Free Tier Default
+  - name: Default product quota
     scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - USPS Addresses API
-      - USPS Tracking API
-      - USPS Domestic Prices API
-      - USPS Carrier Pickup API
-      - USPS International Prices API
-      - USPS Domestic Labels API
-      - USPS International Labels API
-      - USPS Locations API
-      - USPS Service Standards API
-      - USPS Shipping Options API
-      - USPS SCAN Forms API
-      - USPS OAuth API
-  - tier: free
-    name: Free Tier Monthly Quota
+    metric: varies
+    limit: 'see https://developers.usps.com (request quota increase via USPS API service request)'
+  - name: Labels APIs
     scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - USPS Addresses API
-      - USPS Tracking API
-      - USPS Domestic Prices API
-      - USPS Carrier Pickup API
-      - USPS International Prices API
-      - USPS Domestic Labels API
-      - USPS International Labels API
-      - USPS Locations API
-      - USPS Service Standards API
-      - USPS Shipping Options API
-      - USPS SCAN Forms API
-      - USPS OAuth API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - USPS Addresses API
-      - USPS Tracking API
-      - USPS Domestic Prices API
-      - USPS Carrier Pickup API
-      - USPS International Prices API
-      - USPS Domestic Labels API
-      - USPS International Labels API
-      - USPS Locations API
-      - USPS Service Standards API
-      - USPS Shipping Options API
-      - USPS SCAN Forms API
-      - USPS OAuth API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - USPS Addresses API
-      - USPS Tracking API
-      - USPS Domestic Prices API
-      - USPS Carrier Pickup API
-      - USPS International Prices API
-      - USPS Domestic Labels API
-      - USPS International Labels API
-      - USPS Locations API
-      - USPS Service Standards API
-      - USPS Shipping Options API
-      - USPS SCAN Forms API
-      - USPS OAuth API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - USPS Addresses API
-      - USPS Tracking API
-      - USPS Domestic Prices API
-      - USPS Carrier Pickup API
-      - USPS International Prices API
-      - USPS Domestic Labels API
-      - USPS International Labels API
-      - USPS Locations API
-      - USPS Service Standards API
-      - USPS Shipping Options API
-      - USPS SCAN Forms API
-      - USPS OAuth API
+    metric: varies
+    limit: 'enrollment in USPS Ship and Enterprise Payment Account required'
 policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+  - name: OAuth 2.0 Client Credentials
+    description: Access uses OAuth 2.0 client credentials issued through the USPS Developer Portal.
+  - name: Quota Increase Process
+    description: To raise default quotas or access non-default APIs, submit a USPS API service request
+      through the developer portal.
+  - name: Labels Approval
+    description: Labels APIs require additional approval, USPS Ship enrollment, and an Enterprise
+      Payment Account before activation.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
