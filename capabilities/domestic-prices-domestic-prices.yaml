@@ -1,0 +1,164 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: USPS Domestic Prices API — Domestic Prices
+  description: 'USPS Domestic Prices API — Domestic Prices. 3 operations. Lead operation: USPS Domestic Prices Search Base
+    Rates. Self-contained Naftiko capability covering one United States Postal Service business surface.'
+  tags:
+  - United States Postal Service
+  - Domestic Prices
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    UNITED_STATES_POSTAL_SERVICE_API_KEY: UNITED_STATES_POSTAL_SERVICE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: domestic-prices-domestic-prices
+    baseUri: https://apis.usps.com
+    description: USPS Domestic Prices API — Domestic Prices business capability. Self-contained, no shared references.
+    resources:
+    - name: prices-v3-base-rates-search
+      path: /prices/v3/base-rates/search
+      operations:
+      - name: searchbaserates
+        method: POST
+        description: USPS Domestic Prices Search Base Rates
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: prices-v3-extra-service-rates-search
+      path: /prices/v3/extra-service-rates/search
+      operations:
+      - name: searchextraservicerates
+        method: POST
+        description: USPS Domestic Prices Search Extra Service Rates
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: prices-v3-total-rates-search
+      path: /prices/v3/total-rates/search
+      operations:
+      - name: searchtotalrates
+        method: POST
+        description: USPS Domestic Prices Search Total Rates
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.UNITED_STATES_POSTAL_SERVICE_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: domestic-prices-domestic-prices-rest
+    port: 8080
+    description: REST adapter for USPS Domestic Prices API — Domestic Prices. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/prices/v3/base-rates/search
+      name: prices-v3-base-rates-search
+      description: REST surface for prices-v3-base-rates-search.
+      operations:
+      - method: POST
+        name: searchbaserates
+        description: USPS Domestic Prices Search Base Rates
+        call: domestic-prices-domestic-prices.searchbaserates
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/prices/v3/extra-service-rates/search
+      name: prices-v3-extra-service-rates-search
+      description: REST surface for prices-v3-extra-service-rates-search.
+      operations:
+      - method: POST
+        name: searchextraservicerates
+        description: USPS Domestic Prices Search Extra Service Rates
+        call: domestic-prices-domestic-prices.searchextraservicerates
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/prices/v3/total-rates/search
+      name: prices-v3-total-rates-search
+      description: REST surface for prices-v3-total-rates-search.
+      operations:
+      - method: POST
+        name: searchtotalrates
+        description: USPS Domestic Prices Search Total Rates
+        call: domestic-prices-domestic-prices.searchtotalrates
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: domestic-prices-domestic-prices-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for USPS Domestic Prices API — Domestic Prices. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: usps-domestic-prices-search-base
+      description: USPS Domestic Prices Search Base Rates
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: domestic-prices-domestic-prices.searchbaserates
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usps-domestic-prices-search-extra
+      description: USPS Domestic Prices Search Extra Service Rates
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: domestic-prices-domestic-prices.searchextraservicerates
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usps-domestic-prices-search-total
+      description: USPS Domestic Prices Search Total Rates
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: domestic-prices-domestic-prices.searchtotalrates
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

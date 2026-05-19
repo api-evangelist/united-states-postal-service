@@ -1,0 +1,214 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: USPS Addresses API — Addresses
+  description: 'USPS Addresses API — Addresses. 3 operations. Lead operation: USPS Addresses Validate Address. Self-contained
+    Naftiko capability covering one United States Postal Service business surface.'
+  tags:
+  - United States Postal Service
+  - Addresses
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    UNITED_STATES_POSTAL_SERVICE_API_KEY: UNITED_STATES_POSTAL_SERVICE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: addresses-addresses
+    baseUri: https://apis.usps.com
+    description: USPS Addresses API — Addresses business capability. Self-contained, no shared references.
+    resources:
+    - name: addresses-v3-address
+      path: /addresses/v3/address
+      operations:
+      - name: validateaddress
+        method: GET
+        description: USPS Addresses Validate Address
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: streetAddress
+          in: query
+          type: string
+          description: Primary street address line.
+          required: true
+        - name: secondaryAddress
+          in: query
+          type: string
+          description: Secondary address line (apartment, suite, unit, etc.).
+        - name: city
+          in: query
+          type: string
+          description: City name.
+        - name: state
+          in: query
+          type: string
+          description: Two-letter state abbreviation.
+        - name: ZIPCode
+          in: query
+          type: string
+          description: 5-digit ZIP Code.
+        - name: ZIPPlus4
+          in: query
+          type: string
+          description: ZIP+4 Code (4-digit extension).
+    - name: addresses-v3-city-state
+      path: /addresses/v3/city-state
+      operations:
+      - name: getcitystate
+        method: GET
+        description: USPS Addresses Get City and State by ZIP
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ZIPCode
+          in: query
+          type: string
+          description: 5-digit ZIP Code to look up.
+          required: true
+    - name: addresses-v3-zipcode
+      path: /addresses/v3/zipcode
+      operations:
+      - name: getzipcode
+        method: GET
+        description: USPS Addresses Get ZIP Code
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: streetAddress
+          in: query
+          type: string
+          description: Primary street address line.
+          required: true
+        - name: secondaryAddress
+          in: query
+          type: string
+          description: Secondary address line.
+        - name: city
+          in: query
+          type: string
+          description: City name.
+          required: true
+        - name: state
+          in: query
+          type: string
+          description: Two-letter state abbreviation.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.UNITED_STATES_POSTAL_SERVICE_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: addresses-addresses-rest
+    port: 8080
+    description: REST adapter for USPS Addresses API — Addresses. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/addresses/v3/address
+      name: addresses-v3-address
+      description: REST surface for addresses-v3-address.
+      operations:
+      - method: GET
+        name: validateaddress
+        description: USPS Addresses Validate Address
+        call: addresses-addresses.validateaddress
+        with:
+          streetAddress: rest.streetAddress
+          secondaryAddress: rest.secondaryAddress
+          city: rest.city
+          state: rest.state
+          ZIPCode: rest.ZIPCode
+          ZIPPlus4: rest.ZIPPlus4
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/addresses/v3/city-state
+      name: addresses-v3-city-state
+      description: REST surface for addresses-v3-city-state.
+      operations:
+      - method: GET
+        name: getcitystate
+        description: USPS Addresses Get City and State by ZIP
+        call: addresses-addresses.getcitystate
+        with:
+          ZIPCode: rest.ZIPCode
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/addresses/v3/zipcode
+      name: addresses-v3-zipcode
+      description: REST surface for addresses-v3-zipcode.
+      operations:
+      - method: GET
+        name: getzipcode
+        description: USPS Addresses Get ZIP Code
+        call: addresses-addresses.getzipcode
+        with:
+          streetAddress: rest.streetAddress
+          secondaryAddress: rest.secondaryAddress
+          city: rest.city
+          state: rest.state
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: addresses-addresses-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for USPS Addresses API — Addresses. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: usps-addresses-validate-address
+      description: USPS Addresses Validate Address
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: addresses-addresses.validateaddress
+      with:
+        streetAddress: tools.streetAddress
+        secondaryAddress: tools.secondaryAddress
+        city: tools.city
+        state: tools.state
+        ZIPCode: tools.ZIPCode
+        ZIPPlus4: tools.ZIPPlus4
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usps-addresses-get-city-and
+      description: USPS Addresses Get City and State by ZIP
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: addresses-addresses.getcitystate
+      with:
+        ZIPCode: tools.ZIPCode
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usps-addresses-get-zip-code
+      description: USPS Addresses Get ZIP Code
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: addresses-addresses.getzipcode
+      with:
+        streetAddress: tools.streetAddress
+        secondaryAddress: tools.secondaryAddress
+        city: tools.city
+        state: tools.state
+      outputParameters:
+      - type: object
+        mapping: $.

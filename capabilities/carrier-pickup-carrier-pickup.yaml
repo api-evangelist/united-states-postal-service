@@ -1,0 +1,185 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: USPS Carrier Pickup API — Carrier Pickup
+  description: 'USPS Carrier Pickup API — Carrier Pickup. 4 operations. Lead operation: USPS Carrier Pickup Schedule Carrier
+    Pickup. Self-contained Naftiko capability covering one United States Postal Service business surface.'
+  tags:
+  - United States Postal Service
+  - Carrier Pickup
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    UNITED_STATES_POSTAL_SERVICE_API_KEY: UNITED_STATES_POSTAL_SERVICE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: carrier-pickup-carrier-pickup
+    baseUri: https://apis.usps.com
+    description: USPS Carrier Pickup API — Carrier Pickup business capability. Self-contained, no shared references.
+    resources:
+    - name: pickup-v3-carrier-pickup
+      path: /pickup/v3/carrier-pickup
+      operations:
+      - name: schedulecarrierpickup
+        method: POST
+        description: USPS Carrier Pickup Schedule Carrier Pickup
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: getcarrierpickup
+        method: GET
+        description: USPS Carrier Pickup Get Carrier Pickup
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: confirmationNumber
+          in: query
+          type: string
+          description: The confirmation number for the pickup request.
+          required: true
+      - name: updatecarrierpickup
+        method: PUT
+        description: USPS Carrier Pickup Update Carrier Pickup
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: cancelcarrierpickup
+        method: DELETE
+        description: USPS Carrier Pickup Cancel Carrier Pickup
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: confirmationNumber
+          in: query
+          type: string
+          description: The confirmation number for the pickup to cancel.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.UNITED_STATES_POSTAL_SERVICE_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: carrier-pickup-carrier-pickup-rest
+    port: 8080
+    description: REST adapter for USPS Carrier Pickup API — Carrier Pickup. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/pickup/v3/carrier-pickup
+      name: pickup-v3-carrier-pickup
+      description: REST surface for pickup-v3-carrier-pickup.
+      operations:
+      - method: POST
+        name: schedulecarrierpickup
+        description: USPS Carrier Pickup Schedule Carrier Pickup
+        call: carrier-pickup-carrier-pickup.schedulecarrierpickup
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getcarrierpickup
+        description: USPS Carrier Pickup Get Carrier Pickup
+        call: carrier-pickup-carrier-pickup.getcarrierpickup
+        with:
+          confirmationNumber: rest.confirmationNumber
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: updatecarrierpickup
+        description: USPS Carrier Pickup Update Carrier Pickup
+        call: carrier-pickup-carrier-pickup.updatecarrierpickup
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: cancelcarrierpickup
+        description: USPS Carrier Pickup Cancel Carrier Pickup
+        call: carrier-pickup-carrier-pickup.cancelcarrierpickup
+        with:
+          confirmationNumber: rest.confirmationNumber
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: carrier-pickup-carrier-pickup-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for USPS Carrier Pickup API — Carrier Pickup. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: usps-carrier-pickup-schedule-carrier
+      description: USPS Carrier Pickup Schedule Carrier Pickup
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: carrier-pickup-carrier-pickup.schedulecarrierpickup
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usps-carrier-pickup-get-carrier
+      description: USPS Carrier Pickup Get Carrier Pickup
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: carrier-pickup-carrier-pickup.getcarrierpickup
+      with:
+        confirmationNumber: tools.confirmationNumber
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usps-carrier-pickup-update-carrier
+      description: USPS Carrier Pickup Update Carrier Pickup
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: carrier-pickup-carrier-pickup.updatecarrierpickup
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usps-carrier-pickup-cancel-carrier
+      description: USPS Carrier Pickup Cancel Carrier Pickup
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: carrier-pickup-carrier-pickup.cancelcarrierpickup
+      with:
+        confirmationNumber: tools.confirmationNumber
+      outputParameters:
+      - type: object
+        mapping: $.
