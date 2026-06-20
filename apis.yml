@@ -5,7 +5,7 @@ description: >-
   validation, package tracking, domestic and international shipping labels, pricing, carrier pickup scheduling, location
   finding, and Informed Delivery campaign management. The legacy Web Tools platform was retired January 25, 2026, with
   all functionality migrated to the new OAuth 2.0-secured API platform.
-image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 url: https://raw.githubusercontent.com/api-evangelist/united-states-postal-service/refs/heads/main/apis.yml
 created: 2024/01/01
 modified: '2026-05-19'
@@ -23,7 +23,7 @@ apis:
       Validates and corrects address information to USPS specifications, eliminating errors and improving package
       delivery. Supports full address standardization, city and state lookup by ZIP Code, and ZIP Code lookup by
       address.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/addressesv3
     baseURL: https://apis.usps.com
     tags:
@@ -55,7 +55,7 @@ apis:
       Returns tracking status and related details for a given USPS package, including scan events with date, time, and
       location. Supports single and batch package tracking. Version 3.2 includes enhanced scan event extract
       notifications.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/trackingv3r2
     baseURL: https://apis.usps.com
     tags:
@@ -84,7 +84,7 @@ apis:
       Provides postage pricing for domestic USPS shipments based on origin and destination ZIP Codes, weight,
       dimensions, and mail class. Supports base rate lookups, extra service rates (insurance, signature confirmation,
       etc.), and total rate calculations.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/domesticpricesv3
     baseURL: https://apis.usps.com
     tags:
@@ -113,7 +113,7 @@ apis:
     description: >-
       Enables free carrier pickup scheduling for next-day service, Monday through Saturday, excluding federal holidays.
       Supports creating, retrieving, updating, and canceling pickup requests at residential and commercial addresses.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/carrierpickupv3
     baseURL: https://apis.usps.com
     tags:
@@ -141,7 +141,7 @@ apis:
     description: >-
       Provides pricing for international USPS products based on shipment characteristics including destination country,
       weight, dimensions, and service class.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/internationalpricesv3
     baseURL: https://apis.usps.com
     tags:
@@ -157,7 +157,7 @@ apis:
     description: >-
       Creates domestic shipping labels with barcodes in multiple formats and generates Shipping Services Files. Requires
       USPS Ship enrollment and Enterprise Payment Account.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/domesticlabelsv3
     baseURL: https://apis.usps.com
     tags:
@@ -170,7 +170,7 @@ apis:
     aid: united-states-postal-service:usps-domestic-labels-api
   - name: USPS International Labels API
     description: Creates international shipping labels and generates required Shipping Services Files for customs compliance.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/internationallabelsv3
     baseURL: https://apis.usps.com
     tags:
@@ -186,7 +186,7 @@ apis:
     description: >-
       Identifies drop-off facilities and destination entry points for various USPS services. Supports post office
       locator and drop-off location finder.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/locationsv3
     baseURL: https://apis.usps.com
     tags:
@@ -201,7 +201,7 @@ apis:
     description: >-
       Provides delivery benchmarks showing expected transit times between origin and destination ZIP Codes for USPS mail
       classes.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/standardsv3
     baseURL: https://apis.usps.com
     tags:
@@ -216,7 +216,7 @@ apis:
     description: >-
       Returns a comprehensive list of pricing, service standards, and shipping options for USPS products in a single API
       call, eliminating the need to query multiple APIs separately.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/shippingoptionsv3
     baseURL: https://apis.usps.com
     tags:
@@ -231,7 +231,7 @@ apis:
     description: >-
       Links multiple domestic and international labels through a single electronic file number, creating Shipment
       Confirmation Acceptance Notice forms for batch shipping operations.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/scanv3
     baseURL: https://apis.usps.com
     tags:
@@ -246,7 +246,7 @@ apis:
     description: >-
       Industry-standard OAuth 2.0 Client Credentials authentication protecting access to all USPS APIs. Returns Bearer
       Tokens used in the Authorization header for all USPS API calls.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developers.usps.com/Oauth
     baseURL: https://apis.usps.com
     tags:
