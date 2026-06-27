@@ -46,7 +46,7 @@ apis:
         title: Address Structure
       - type: JSONLD
         url: json-ld/united-states-postal-service-addresses-context.jsonld
-      - type: Example
+      - type: Examples
         url: examples/addresses-address-example.json
         title: Address Example
     aid: united-states-postal-service:usps-addresses-api
@@ -75,7 +75,7 @@ apis:
         title: Tracking Event Structure
       - type: JSONLD
         url: json-ld/united-states-postal-service-tracking-context.jsonld
-      - type: Example
+      - type: Examples
         url: examples/tracking-tracking-event-example.json
         title: Tracking Event Example
     aid: united-states-postal-service:usps-tracking-api
@@ -105,7 +105,7 @@ apis:
         title: Base Rate Request Structure
       - type: JSONLD
         url: json-ld/united-states-postal-service-domestic-context.jsonld
-      - type: Example
+      - type: Examples
         url: examples/domestic-prices-base-rate-request-example.json
         title: Base Rate Request Example
     aid: united-states-postal-service:usps-domestic-prices-api
@@ -133,7 +133,7 @@ apis:
         title: Pickup Request Structure
       - type: JSONLD
         url: json-ld/united-states-postal-service-carrier-context.jsonld
-      - type: Example
+      - type: Examples
         url: examples/carrier-pickup-pickup-request-example.json
         title: Pickup Request Example
     aid: united-states-postal-service:usps-carrier-pickup-api
