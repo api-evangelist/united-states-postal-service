@@ -260,6 +260,10 @@ apis:
         url: https://developers.usps.com/getting-started
     aid: united-states-postal-service:usps-oauth-api
 common:
+  - type: DomainSecurity
+    url: security/united-states-postal-service-domain-security.yml
+  - type: Authentication
+    url: authentication/united-states-postal-service-authentication.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/usps
   - type: Portal
