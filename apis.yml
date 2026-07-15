@@ -260,6 +260,8 @@ apis:
         url: https://developers.usps.com/getting-started
     aid: united-states-postal-service:usps-oauth-api
 common:
+  - type: AgenticAccess
+    url: agentic-access/united-states-postal-service-agentic-access.yml
   - type: DomainSecurity
     url: security/united-states-postal-service-domain-security.yml
   - type: Authentication
