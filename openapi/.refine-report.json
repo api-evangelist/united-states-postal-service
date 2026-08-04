@@ -1,0 +1,20 @@
+{
+  "provider": "united-states-postal-service",
+  "sources": [
+    "united-states-postal-service-addresses-api-openapi.yml",
+    "united-states-postal-service-carrier-pickup-api-openapi.yml",
+    "united-states-postal-service-domestic-prices-api-openapi.yml",
+    "united-states-postal-service-tracking-api-openapi.yml"
+  ],
+  "outputs": [
+    "united-states-postal-service-addresses-api-openapi.yml",
+    "united-states-postal-service-carrier-pickup-api-openapi.yml",
+    "united-states-postal-service-domestic-prices-api-openapi.yml",
+    "united-states-postal-service-tracking-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
