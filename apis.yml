@@ -146,6 +146,9 @@ apis:
   baseURL: https://apis.usps.com
   tags:
   - Authentication
+  - Government
+  tags_raw:
+  - Authentication
   - OAuth
   - Government
   properties:
