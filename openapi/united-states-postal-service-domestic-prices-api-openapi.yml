@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: USPS Addresses Domestic Prices API
   description: The USPS Addresses API validates and corrects address information, eliminating errors, improving package delivery service and package pricing. Supports address standardization, city and state lookup, and ZIP Code validation.
@@ -196,6 +196,60 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    ExtraServiceRateResponse:
+      type: object
+      description: Extra service rate response.
+      properties:
+        extraServices:
+          type: array
+          description: List of extra service rates.
+          items:
+            type: object
+            properties:
+              extraServiceCode:
+                type: string
+                description: Extra service code.
+                example: '955'
+              name:
+                type: string
+                description: Name of the extra service.
+                example: Signature Confirmation
+              price:
+                type: number
+                description: Price for the extra service in USD.
+                example: 3.8
+    TotalRateResponse:
+      type: object
+      description: Total rate response including base and extra service rates.
+      properties:
+        rates:
+          type: array
+          description: List of total rates.
+          items:
+            type: object
+            properties:
+              totalBasePrice:
+                type: number
+                description: Base postage price in USD.
+                example: 8.7
+              totalPrice:
+                type: number
+                description: Total price including all fees in USD.
+                example: 12.5
+              fees:
+                type: array
+                description: Breakdown of additional fees.
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Fee name.
+                      example: Signature Confirmation
+                    price:
+                      type: number
+                      description: Fee amount in USD.
+                      example: 3.8
     RateResponse:
       type: object
       description: Base rate search response.
@@ -227,6 +281,33 @@ components:
                 description: Additional fees included in this rate.
                 items:
                   type: object
+    ExtraServiceRateRequest:
+      type: object
+      required:
+      - extraServiceCode
+      - mailClass
+      description: Request parameters for extra service rate search.
+      properties:
+        originZIPCode:
+          type: string
+          description: 5-digit origin ZIP Code.
+          example: '20212'
+        destinationZIPCode:
+          type: string
+          description: 5-digit destination ZIP Code.
+          example: '90210'
+        extraServiceCode:
+          type: string
+          description: Code identifying the extra service.
+          example: '955'
+        mailClass:
+          type: string
+          description: USPS mail class.
+          example: PRIORITY_MAIL
+        weight:
+          type: number
+          description: Package weight in pounds.
+          example: 1.5
     BaseRateRequest:
       type: object
       required:
@@ -296,22 +377,6 @@ components:
           type: string
           description: Rate indicator code for special rate categories.
           example: DR
-    Error:
-      type: object
-      description: API error response.
-      properties:
-        apiVersion:
-          type: string
-          example: '3.0'
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              example: PRICE_ERR_001
-            message:
-              type: string
-              example: Invalid mail class
     TotalRateRequest:
       type: object
       required:
@@ -359,87 +424,22 @@ components:
                 type: string
                 description: Extra service code.
                 example: '955'
-    TotalRateResponse:
+    Error:
       type: object
-      description: Total rate response including base and extra service rates.
+      description: API error response.
       properties:
-        rates:
-          type: array
-          description: List of total rates.
-          items:
-            type: object
-            properties:
-              totalBasePrice:
-                type: number
-                description: Base postage price in USD.
-                example: 8.7
-              totalPrice:
-                type: number
-                description: Total price including all fees in USD.
-                example: 12.5
-              fees:
-                type: array
-                description: Breakdown of additional fees.
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      description: Fee name.
-                      example: Signature Confirmation
-                    price:
-                      type: number
-                      description: Fee amount in USD.
-                      example: 3.8
-    ExtraServiceRateRequest:
-      type: object
-      required:
-      - extraServiceCode
-      - mailClass
-      description: Request parameters for extra service rate search.
-      properties:
-        originZIPCode:
+        apiVersion:
           type: string
-          description: 5-digit origin ZIP Code.
-          example: '20212'
-        destinationZIPCode:
-          type: string
-          description: 5-digit destination ZIP Code.
-          example: '90210'
-        extraServiceCode:
-          type: string
-          description: Code identifying the extra service.
-          example: '955'
-        mailClass:
-          type: string
-          description: USPS mail class.
-          example: PRIORITY_MAIL
-        weight:
-          type: number
-          description: Package weight in pounds.
-          example: 1.5
-    ExtraServiceRateResponse:
-      type: object
-      description: Extra service rate response.
-      properties:
-        extraServices:
-          type: array
-          description: List of extra service rates.
-          items:
-            type: object
-            properties:
-              extraServiceCode:
-                type: string
-                description: Extra service code.
-                example: '955'
-              name:
-                type: string
-                description: Name of the extra service.
-                example: Signature Confirmation
-              price:
-                type: number
-                description: Price for the extra service in USD.
-                example: 3.8
+          example: '3.0'
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: PRICE_ERR_001
+            message:
+              type: string
+              example: Invalid mail class
   securitySchemes:
     bearerAuth:
       type: http

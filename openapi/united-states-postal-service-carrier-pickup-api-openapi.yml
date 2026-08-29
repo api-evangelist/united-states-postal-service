@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: USPS Addresses Carrier Pickup API
   description: The USPS Addresses API validates and corrects address information, eliminating errors, improving package delivery service and package pricing. Supports address standardization, city and state lookup, and ZIP Code validation.
@@ -219,44 +219,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    PickupUpdateRequest:
-      type: object
-      description: Request to update an existing carrier pickup.
-      required:
-      - confirmationNumber
-      properties:
-        confirmationNumber:
-          type: string
-          description: Confirmation number of the pickup to update.
-          example: WTC123456789
-        packages:
-          type: array
-          description: Updated package list.
-          items:
-            $ref: '#/components/schemas/PickupPackage'
-        packageLocation:
-          type: string
-          description: Updated package location.
-          example: BACK_DOOR
-        specialInstructions:
-          type: string
-          description: Updated special instructions.
-    Error:
-      type: object
-      description: API error response.
-      properties:
-        apiVersion:
-          type: string
-          example: '3.0'
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              example: PICKUP_ERR_001
-            message:
-              type: string
-              example: Invalid pickup address
     PickupAddress:
       type: object
       description: Address for carrier pickup.
@@ -286,6 +248,47 @@ components:
           type: string
           description: 5-digit ZIP Code.
           example: '20212'
+    PickupUpdateRequest:
+      type: object
+      description: Request to update an existing carrier pickup.
+      required:
+      - confirmationNumber
+      properties:
+        confirmationNumber:
+          type: string
+          description: Confirmation number of the pickup to update.
+          example: WTC123456789
+        packages:
+          type: array
+          description: Updated package list.
+          items:
+            $ref: '#/components/schemas/PickupPackage'
+        packageLocation:
+          type: string
+          description: Updated package location.
+          example: BACK_DOOR
+        specialInstructions:
+          type: string
+          description: Updated special instructions.
+    PickupResponse:
+      type: object
+      description: Carrier pickup confirmation response.
+      properties:
+        confirmationNumber:
+          type: string
+          description: Unique confirmation number for the pickup.
+          example: WTC123456789
+        dayOfWeek:
+          type: string
+          description: Day of the week for the scheduled pickup.
+          example: Monday
+        pickupDate:
+          type: string
+          format: date
+          description: Date of the scheduled pickup.
+          example: '2025-03-17'
+        address:
+          $ref: '#/components/schemas/PickupAddress'
     PickupRequest:
       type: object
       description: Request to schedule a carrier pickup.
@@ -326,25 +329,6 @@ components:
           type: string
           description: Special pickup instructions for the carrier.
           example: Leave by the blue mailbox
-    PickupResponse:
-      type: object
-      description: Carrier pickup confirmation response.
-      properties:
-        confirmationNumber:
-          type: string
-          description: Unique confirmation number for the pickup.
-          example: WTC123456789
-        dayOfWeek:
-          type: string
-          description: Day of the week for the scheduled pickup.
-          example: Monday
-        pickupDate:
-          type: string
-          format: date
-          description: Date of the scheduled pickup.
-          example: '2025-03-17'
-        address:
-          $ref: '#/components/schemas/PickupAddress'
     PickupPackage:
       type: object
       description: Package information for pickup.
@@ -364,6 +348,22 @@ components:
           type: integer
           description: Number of packages of this service type.
           example: 1
+    Error:
+      type: object
+      description: API error response.
+      properties:
+        apiVersion:
+          type: string
+          example: '3.0'
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: PICKUP_ERR_001
+            message:
+              type: string
+              example: Invalid pickup address
   securitySchemes:
     bearerAuth:
       type: http

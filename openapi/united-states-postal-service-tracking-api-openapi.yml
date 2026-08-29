@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: USPS Addresses Tracking API
   description: The USPS Addresses API validates and corrects address information, eliminating errors, improving package delivery service and package pricing. Supports address standardization, city and state lookup, and ZIP Code validation.
@@ -166,6 +166,20 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    MultipleTrackingRequest:
+      type: object
+      description: Request body for multiple package tracking.
+      required:
+      - trackingNumbers
+      properties:
+        trackingNumbers:
+          type: array
+          description: List of USPS tracking numbers to look up (max 10).
+          items:
+            type: string
+          example:
+          - '9400111899223397910390'
+          - '9400111899223397910407'
     MultipleTrackingResult:
       type: object
       description: Tracking results for multiple packages.
@@ -189,51 +203,6 @@ components:
                 format: date
                 description: Actual or estimated delivery date.
                 example: '2025-03-14'
-    Error:
-      type: object
-      description: API error response.
-      properties:
-        apiVersion:
-          type: string
-          description: API version.
-          example: '3.2'
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              description: Error code.
-              example: TRACK_ERR_001
-            message:
-              type: string
-              description: Error message.
-              example: Tracking number not found
-            errors:
-              type: array
-              items:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: '404'
-                  title:
-                    type: string
-                    example: Not Found
-                  detail:
-                    type: string
-                    example: The tracking number provided was not found in the system.
-    TrackingResult:
-      type: object
-      description: Tracking result for a single package.
-      properties:
-        TrackSummary:
-          $ref: '#/components/schemas/TrackingEvent'
-          description: Most recent tracking event summary.
-        TrackDetail:
-          type: array
-          description: Full list of historical tracking events.
-          items:
-            $ref: '#/components/schemas/TrackingEvent'
     TrackingEvent:
       type: object
       description: A single tracking scan event for a package.
@@ -282,20 +251,51 @@ components:
           type: string
           description: Code indicating delivery type or condition.
           example: '01'
-    MultipleTrackingRequest:
+    TrackingResult:
       type: object
-      description: Request body for multiple package tracking.
-      required:
-      - trackingNumbers
+      description: Tracking result for a single package.
       properties:
-        trackingNumbers:
+        TrackSummary:
+          $ref: '#/components/schemas/TrackingEvent'
+          description: Most recent tracking event summary.
+        TrackDetail:
           type: array
-          description: List of USPS tracking numbers to look up (max 10).
+          description: Full list of historical tracking events.
           items:
-            type: string
-          example:
-          - '9400111899223397910390'
-          - '9400111899223397910407'
+            $ref: '#/components/schemas/TrackingEvent'
+    Error:
+      type: object
+      description: API error response.
+      properties:
+        apiVersion:
+          type: string
+          description: API version.
+          example: '3.2'
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code.
+              example: TRACK_ERR_001
+            message:
+              type: string
+              description: Error message.
+              example: Tracking number not found
+            errors:
+              type: array
+              items:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: '404'
+                  title:
+                    type: string
+                    example: Not Found
+                  detail:
+                    type: string
+                    example: The tracking number provided was not found in the system.
   securitySchemes:
     bearerAuth:
       type: http
