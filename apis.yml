@@ -5,6 +5,18 @@ description: >-
   validation, package tracking, domestic and international shipping labels, pricing, carrier pickup scheduling, location
   finding, and Informed Delivery campaign management. The legacy Web Tools platform was retired January 25, 2026, with
   all functionality migrated to the new OAuth 2.0-secured API platform.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: self-serve
