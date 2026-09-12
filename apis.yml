@@ -379,6 +379,8 @@ apis:
   - type: Examples
     url: examples/carrier-pickup-pickup-request-example.json
 common:
+  - type: Website
+    url: https://www.usps.com/
   - type: AgenticAccess
     url: agentic-access/united-states-postal-service-agentic-access.yml
   - type: DomainSecurity
