@@ -98,6 +98,10 @@ apis:
   humanURL: https://developers.usps.com/locationsv3
   baseURL: https://apis.usps.com
   tags:
+  - Location
+  - Post Offices
+  - Government
+  tags_raw:
   - Locations
   - Post Offices
   - Government
