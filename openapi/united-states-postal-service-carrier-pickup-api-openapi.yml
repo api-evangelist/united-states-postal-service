@@ -1,12 +1,11 @@
 openapi: 3.2.0
 info:
-  title: USPS Addresses Carrier Pickup API
-  description: The USPS Addresses API validates and corrects address information, eliminating errors, improving package delivery service and package pricing. Supports address standardization, city and state lookup, and ZIP Code validation.
+  title: USPS Carrier Pickup API
+  description: The USPS Carrier Pickup API enables free carrier pickup scheduling for next-day service, Monday through Saturday, excluding holidays. Supports creating, retrieving, updating, and canceling pickup requests.
   version: '3.0'
   contact:
     name: USPS API Support
     url: https://developers.usps.com/
-    email: https://emailus.usps.com/s/web-tools-inquiry
   x-generated-from: documentation
 servers:
 - url: https://apis.usps.com
@@ -219,76 +218,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    PickupAddress:
-      type: object
-      description: Address for carrier pickup.
-      required:
-      - streetAddress
-      - city
-      - state
-      - ZIPCode
-      properties:
-        streetAddress:
-          type: string
-          description: Primary street address.
-          example: 2 Massachusetts Ave NE
-        secondaryAddress:
-          type: string
-          description: Apartment, suite, or unit number.
-          example: Suite 100
-        city:
-          type: string
-          description: City name.
-          example: Washington
-        state:
-          type: string
-          description: Two-letter state abbreviation.
-          example: DC
-        ZIPCode:
-          type: string
-          description: 5-digit ZIP Code.
-          example: '20212'
-    PickupUpdateRequest:
-      type: object
-      description: Request to update an existing carrier pickup.
-      required:
-      - confirmationNumber
-      properties:
-        confirmationNumber:
-          type: string
-          description: Confirmation number of the pickup to update.
-          example: WTC123456789
-        packages:
-          type: array
-          description: Updated package list.
-          items:
-            $ref: '#/components/schemas/PickupPackage'
-        packageLocation:
-          type: string
-          description: Updated package location.
-          example: BACK_DOOR
-        specialInstructions:
-          type: string
-          description: Updated special instructions.
-    PickupResponse:
-      type: object
-      description: Carrier pickup confirmation response.
-      properties:
-        confirmationNumber:
-          type: string
-          description: Unique confirmation number for the pickup.
-          example: WTC123456789
-        dayOfWeek:
-          type: string
-          description: Day of the week for the scheduled pickup.
-          example: Monday
-        pickupDate:
-          type: string
-          format: date
-          description: Date of the scheduled pickup.
-          example: '2025-03-17'
-        address:
-          $ref: '#/components/schemas/PickupAddress'
     PickupRequest:
       type: object
       description: Request to schedule a carrier pickup.
@@ -348,6 +277,35 @@ components:
           type: integer
           description: Number of packages of this service type.
           example: 1
+    PickupAddress:
+      type: object
+      description: Address for carrier pickup.
+      required:
+      - streetAddress
+      - city
+      - state
+      - ZIPCode
+      properties:
+        streetAddress:
+          type: string
+          description: Primary street address.
+          example: 2 Massachusetts Ave NE
+        secondaryAddress:
+          type: string
+          description: Apartment, suite, or unit number.
+          example: Suite 100
+        city:
+          type: string
+          description: City name.
+          example: Washington
+        state:
+          type: string
+          description: Two-letter state abbreviation.
+          example: DC
+        ZIPCode:
+          type: string
+          description: 5-digit ZIP Code.
+          example: '20212'
     Error:
       type: object
       description: API error response.
@@ -364,11 +322,52 @@ components:
             message:
               type: string
               example: Invalid pickup address
+    PickupUpdateRequest:
+      type: object
+      description: Request to update an existing carrier pickup.
+      required:
+      - confirmationNumber
+      properties:
+        confirmationNumber:
+          type: string
+          description: Confirmation number of the pickup to update.
+          example: WTC123456789
+        packages:
+          type: array
+          description: Updated package list.
+          items:
+            $ref: '#/components/schemas/PickupPackage'
+        packageLocation:
+          type: string
+          description: Updated package location.
+          example: BACK_DOOR
+        specialInstructions:
+          type: string
+          description: Updated special instructions.
+    PickupResponse:
+      type: object
+      description: Carrier pickup confirmation response.
+      properties:
+        confirmationNumber:
+          type: string
+          description: Unique confirmation number for the pickup.
+          example: WTC123456789
+        dayOfWeek:
+          type: string
+          description: Day of the week for the scheduled pickup.
+          example: Monday
+        pickupDate:
+          type: string
+          format: date
+          description: Date of the scheduled pickup.
+          example: '2025-03-17'
+        address:
+          $ref: '#/components/schemas/PickupAddress'
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-      description: OAuth 2.0 Bearer Token obtained from the USPS OAuth API.
+      description: OAuth 2.0 Bearer Token.
 externalDocs:
-  description: USPS Addresses API Documentation
-  url: https://developers.usps.com/addressesv3
+  description: USPS Carrier Pickup API Documentation
+  url: https://developers.usps.com/carrierpickupv3

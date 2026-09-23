@@ -1,10 +1,10 @@
 {
   "provider": "united-states-postal-service",
   "sources": [
-    "united-states-postal-service-addresses-api-openapi.yml",
-    "united-states-postal-service-carrier-pickup-api-openapi.yml",
-    "united-states-postal-service-domestic-prices-api-openapi.yml",
-    "united-states-postal-service-tracking-api-openapi.yml"
+    "_ae-authored/united-states-postal-service-addresses-openapi.yml",
+    "_ae-authored/united-states-postal-service-carrier-pickup-openapi.yml",
+    "_ae-authored/united-states-postal-service-domestic-prices-openapi.yml",
+    "_ae-authored/united-states-postal-service-tracking-openapi.yml"
   ],
   "outputs": [
     "united-states-postal-service-addresses-api-openapi.yml",
@@ -16,11 +16,17 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "united-states-postal-service-addresses-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "united-states-postal-service-carrier-pickup-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "united-states-postal-service-domestic-prices-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "united-states-postal-service-tracking-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (0 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "united-states-postal-service-addresses-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "united-states-postal-service-carrier-pickup-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "united-states-postal-service-domestic-prices-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "united-states-postal-service-tracking-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "united-states-postal-service-addresses-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "united-states-postal-service-carrier-pickup-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "united-states-postal-service-domestic-prices-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "united-states-postal-service-tracking-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

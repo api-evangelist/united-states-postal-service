@@ -243,6 +243,44 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    Error:
+      type: object
+      description: API error response.
+      properties:
+        apiVersion:
+          type: string
+          description: API version that returned the error.
+          example: '3.0'
+        error:
+          type: object
+          description: Error details.
+          properties:
+            code:
+              type: string
+              description: Error code.
+              example: ADDR_ERR_001
+            message:
+              type: string
+              description: Human-readable error message.
+              example: Address not found
+            errors:
+              type: array
+              description: List of field-level validation errors.
+              items:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: HTTP status code as string.
+                    example: '400'
+                  title:
+                    type: string
+                    description: Error title.
+                    example: Invalid ZIP Code
+                  detail:
+                    type: string
+                    description: Error detail message.
+                    example: The ZIP Code provided is not valid.
     ZIPCodeResult:
       type: object
       description: ZIP Code lookup result.
@@ -267,22 +305,6 @@ components:
           type: string
           description: ZIP+4 Code.
           example: '0001'
-    CityState:
-      type: object
-      description: City and state lookup result.
-      properties:
-        city:
-          type: string
-          description: City name.
-          example: WASHINGTON
-        state:
-          type: string
-          description: Two-letter state abbreviation.
-          example: DC
-        ZIPCode:
-          type: string
-          description: The queried ZIP Code.
-          example: '20212'
     Address:
       type: object
       description: USPS standardized address response.
@@ -351,44 +373,22 @@ components:
           type: string
           description: DPV footnote codes.
           example: AABB
-    Error:
+    CityState:
       type: object
-      description: API error response.
+      description: City and state lookup result.
       properties:
-        apiVersion:
+        city:
           type: string
-          description: API version that returned the error.
-          example: '3.0'
-        error:
-          type: object
-          description: Error details.
-          properties:
-            code:
-              type: string
-              description: Error code.
-              example: ADDR_ERR_001
-            message:
-              type: string
-              description: Human-readable error message.
-              example: Address not found
-            errors:
-              type: array
-              description: List of field-level validation errors.
-              items:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    description: HTTP status code as string.
-                    example: '400'
-                  title:
-                    type: string
-                    description: Error title.
-                    example: Invalid ZIP Code
-                  detail:
-                    type: string
-                    description: Error detail message.
-                    example: The ZIP Code provided is not valid.
+          description: City name.
+          example: WASHINGTON
+        state:
+          type: string
+          description: Two-letter state abbreviation.
+          example: DC
+        ZIPCode:
+          type: string
+          description: The queried ZIP Code.
+          example: '20212'
   securitySchemes:
     bearerAuth:
       type: http
